@@ -1,0 +1,28 @@
+{
+  "notes": [
+    {
+      "id": 1,
+      "title": "Biology - Cell Structure",
+      "content": "Cells are the basic unit of life. They contain various organelles including:\n\n• Nucleus: Contains genetic material (DNA)\n• Mitochondria: Powerhouse of the cell, produces ATP\n• Ribosomes: Site of protein synthesis\n• Endoplasmic Reticulum: Transport system within the cell\n• Golgi Apparatus: Packages and distributes proteins\n• Cell Membrane: Controls what enters and leaves the cell",
+      "date": "2024-01-15",
+      "subject": "Biology",
+      "tags": ["cell", "biology", "organelles"]
+    },
+    {
+      "id": 2,
+      "title": "JavaScript Fundamentals",
+      "content": "JavaScript is a versatile programming language used for web development.\n\nKey concepts:\n\n• Variables: let, const, var\n• Functions: Regular functions, arrow functions\n• Objects: Key-value pairs\n• Arrays: Ordered lists of data\n• DOM manipulation\n• Asynchronous programming with Promises and async/await",
+      "date": "2024-01-14",
+      "subject": "Programming",
+      "tags": ["javascript", "programming", "web development"]
+    },
+    {
+      "id": 3,
+      "title": "React Hooks Overview",
+      "content": "React Hooks allow functional components to use state and lifecycle methods.\n\nCommon hooks:\n\n• useState: Manage component state\n• useEffect: Handle side effects\n• useContext: Access context values\n• useReducer: Complex state management\n• useMemo: Memoize expensive calculations\n• useCallback: Memoize functions",
+      "date": "2024-01-13",
+      "subject": "React",
+      "tags": ["react", "hooks", "frontend"]
+    }
+  ]
+}

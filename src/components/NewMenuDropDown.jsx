@@ -1,0 +1,79 @@
+import { useEffect, useRef, useState } from 'react'
+
+/**
+ * MenuDropdown - a small menu toggled from left of prompt bar.
+ * Replace menu items or handlers with your own app actions.
+ */
+const NewMenuDropdown = ({ open: propOpen, onToggle }) => {
+  const [open, setOpen] = useState(Boolean(propOpen))
+  const ref = useRef(null)
+
+  useEffect(() => {
+    setOpen(Boolean(propOpen))
+  }, [propOpen])
+
+  useEffect(() => {
+    const onDocClick = (e) => {
+      if (ref.current && !ref.current.contains(e.target)) {
+        setOpen(false)
+      }
+    }
+    document.addEventListener('click', onDocClick)
+    return () => document.removeEventListener('click', onDocClick)
+  }, [])
+
+  const toggle = () => {
+    setOpen((s) => {
+      const next = !s
+      onToggle && onToggle()
+      return next
+    })
+  }
+
+  return (
+    <div ref={ref} style={{ position: 'relative' }}>
+      <button
+        className="btn btn-light"
+        onClick={toggle}
+        style={{ width: 44, height: 44, borderRadius: 10 }}
+        aria-haspopup="true"
+        aria-expanded={open}
+        title="Menu"
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2">
+          <circle cx="5" cy="12" r="1.5" />
+          <circle cx="12" cy="12" r="1.5" />
+          <circle cx="19" cy="12" r="1.5" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          style={{
+            position: 'absolute',
+            bottom: 52,
+            left: 0,
+            minWidth: 180,
+            background: '#fff',
+            borderRadius: 8,
+            padding: 8,
+            boxShadow: '0 8px 24px rgba(20,20,30,0.12)',
+            zIndex: 2000,
+          }}
+        >
+          <button className="dropdown-item" style={{ display: 'block' }} onClick={() => alert('Generate Summary')}>
+            Generate Summary
+          </button>
+          <button className="dropdown-item" style={{ display: 'block' }} onClick={() => alert('Create Flashcards')}>
+            Create Flashcards
+          </button>
+          <button className="dropdown-item" style={{ display: 'block' }} onClick={() => alert('Export Notes')}>
+            Export Notes
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
+export default NewMenuDropdown

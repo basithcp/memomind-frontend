@@ -1,0 +1,104 @@
+{
+    "questions": [
+        {
+            "question": "What does AI represent at its core according to the text?",
+            "options": [
+                "A fundamental shift reshaping the future",
+                "A technological trend",
+                "Simple automation",
+                "A tool for entertainment"
+            ],
+            "answer": 0
+        },
+        {
+            "question": "Which industry is NOT mentioned as being transformed by AI in the text?",
+            "options": [
+                "Healthcare",
+                "Education",
+                "Finance",
+                "Transportation"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "What does the text predict for the next decade regarding AI integration?",
+            "options": [
+                "Decreased presence in daily life",
+                "Deeper integration into daily life",
+                "No significant change",
+                "Complete replacement of human jobs"
+            ],
+            "answer": 1
+        },
+        {
+            "question": "What type of tasks will AI handle in the future, according to the text?",
+            "options": [
+                "Routine and data-intensive tasks",
+                "Only creative tasks",
+                "Emotional support tasks",
+                "Physical labor tasks"
+            ],
+            "answer": 0
+        },
+        {
+            "question": "What does the text suggest about the future of work with AI?",
+            "options": [
+                "Mass unemployment",
+                "No change in job roles",
+                "A transition to roles requiring critical thinking and emotional intelligence",
+                "AI will eliminate all jobs"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "What is a key tension mentioned in the future of AI?",
+            "options": [
+                "Balancing AI's potential with ethical risks",
+                "Increasing AI speed",
+                "Reducing AI costs",
+                "Eliminating human jobs"
+            ],
+            "answer": 0
+        },
+        {
+            "question": "What global challenges does AI have the potential to solve, according to the text?",
+            "options": [
+                "War and conflict",
+                "World hunger and space exploration",
+                "Poverty and inequality",
+                "Climate modeling and drug discovery"
+            ],
+            "answer": 3
+        },
+        {
+            "question": "What ethical risks related to AI are mentioned in the text?",
+            "options": [
+                "Lack of interest from industries",
+                "High costs and slow adoption",
+                "Bias, privacy, and control",
+                "Over-reliance on human labor"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "What must global society do to ensure a beneficial future with AI?",
+            "options": [
+                "Ignore AI development",
+                "Ban AI technology",
+                "Establish robust frameworks for governance and fairness",
+                "Focus solely on economic growth"
+            ],
+            "answer": 2
+        },
+        {
+            "question": "What is the ultimate goal regarding AI's impact on human potential?",
+            "options": [
+                "Diminished human potential",
+                "No change in human potential",
+                "Augmented human potential",
+                "Elimination of human potential"
+            ],
+            "answer": 2
+        }
+    ]
+}
