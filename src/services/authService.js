@@ -22,6 +22,7 @@ export async function login({ username, password }) {
       username,
       password,
     });
+    
     return result.data;
   } catch (error) {
     throw error;
