@@ -10,30 +10,32 @@ const Sidebar = () => {
   return (
     <div className="sidebar p-4">
       {/* Logo Section */}
-      <div className="d-flex flex-column align-items-center mb-4">
-        <div className="logo-icon mb-3">
-          <div className="d-flex align-items-center justify-content-center">
-            <div 
-              style={{ 
-                width: '24px', 
-                height: '24px', 
-                backgroundColor: '#FCD34D', 
-                borderRadius: '50%',
-                marginRight: '8px'
-              }}
-            />
-            <div 
-              style={{ 
-                width: '16px', 
-                height: '12px', 
-                backgroundColor: 'white', 
-                borderRadius: '2px'
-              }}
-            />
+      <Link to="/" className='nav-link'>
+        <div className="d-flex flex-column align-items-center mb-4">
+          <div className="logo-icon mb-3">
+            <div className="d-flex align-items-center justify-content-center">
+              <div 
+                style={{ 
+                  width: '24px', 
+                  height: '24px', 
+                  backgroundColor: '#FCD34D', 
+                  borderRadius: '50%',
+                  marginRight: '8px'
+                }}
+              />
+              <div 
+                style={{ 
+                  width: '16px', 
+                  height: '12px', 
+                  backgroundColor: 'white', 
+                  borderRadius: '2px'
+                }}
+              />
+            </div>
           </div>
+          <h4 className="text-white fw-bold mb-0">MemoMind</h4>
         </div>
-        <h4 className="text-white fw-bold mb-0">MemoMind</h4>
-      </div>
+      </Link>
 
       {/* Navigation Menu */}
       <nav className="mt-4">
