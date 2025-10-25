@@ -1,51 +1,91 @@
 import { useEffect, useState } from 'react';
-import fcString from '../data/dummyGeneratedFCs.json';
+import { useParams } from 'react-router-dom';
+import { contentAPI } from '../api/content';
+
 const LoadFlashCardsPage = () => {
-  const [isGenerating, setIsGenerating] = useState(true)
-  const [generatedFlashcards, setGeneratedFlashcards] = useState([])
-  const [currentCardIndex, setCurrentCardIndex] = useState(0)
-  const [showAnswer, setShowAnswer] = useState(false)
-  const fcs = Array.isArray(fcString?.questions) ? fcString.questions : [];
+  const [isGenerating, setIsGenerating] = useState(true);
+  const [generatedFlashcards, setGeneratedFlashcards] = useState([]);
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
+  const [showAnswer, setShowAnswer] = useState(false);
+  const { itemId } = useParams();
+  const [error, setError] = useState('');
+
   useEffect(() => {
-    // Simulate generating flashcards
-    const timer = setTimeout(() => {
-      setIsGenerating(false)
-      setGeneratedFlashcards(fcs)
-    }, 2000)
-    return () => clearTimeout(timer)
-  }, [])
+    let mounted = true;
+
+    const loadSavedFC = async () => {
+      try {
+        setIsGenerating(true);
+        setError('');
+
+        const user = localStorage.getItem('user');
+        const userId = user ? JSON.parse(user).username : null;
+        if (!userId) throw new Error('User not authenticated. Please login again.');
+        if (!itemId) throw new Error('No flashcard id provided in route.');
+
+        const res = await contentAPI.loadSavedFC?.(userId, itemId) ?? await contentAPI.loadSavedFlashcard?.(userId, itemId) ?? null;
+
+        if (!mounted) return;
+
+        const payload = res?.fc ?? res ?? {};
+        // defensive extraction: try several common shapes
+        let flashcards = payload.questions;
+        // fallback to local dummy data if API returned nothing useful
+        if (!flashcards || flashcards.length === 0) {
+          flashcards = [];
+        }
+
+        setGeneratedFlashcards(flashcards);
+      } catch (err) {
+        console.error('Error loading saved Flashcards:', err);
+        if (mounted) {
+          setError(err?.message || 'Failed to load flashcards.');
+          // keep UI usable by setting empty list (or you can fallback to fcs if you prefer)
+          setGeneratedFlashcards([]);
+        }
+      } finally {
+        if (mounted) setIsGenerating(false);
+      }
+    };
+
+    loadSavedFC();
+
+    return () => {
+      mounted = false;
+    };
+  }, [itemId]); // re-run when route param changes
 
   const currentCard = generatedFlashcards[currentCardIndex] || {
     question: '',
     answer: '',
-  }
+  };
 
   const handleShowAnswer = () => {
-    setShowAnswer((s) => !s)
-  }
+    setShowAnswer((s) => !s);
+  };
 
   const handleNextCard = () => {
     if (currentCardIndex < generatedFlashcards.length - 1) {
-      setCurrentCardIndex((prev) => prev + 1)
-      setShowAnswer(false)
+      setCurrentCardIndex((prev) => prev + 1);
+      setShowAnswer(false);
     }
-  }
+  };
 
   const handlePreviousCard = () => {
     if (currentCardIndex > 0) {
-      setCurrentCardIndex((prev) => prev - 1)
-      setShowAnswer(false)
+      setCurrentCardIndex((prev) => prev - 1);
+      setShowAnswer(false);
     }
-  }
+  };
 
   const handleModify = (newFlashcards) => {
-    setGeneratedFlashcards(newFlashcards)
-  }
+    setGeneratedFlashcards(newFlashcards);
+  };
 
   const handleSave = (flashcards) => {
-    console.log('Saving flashcards for revision:', flashcards)
-    alert('Flashcards saved for revision! You can now access them from the revision menu.')
-  }
+    console.log('Saving flashcards for revision:', flashcards);
+    alert('Flashcards saved for revision! You can now access them from the revision menu.');
+  };
 
   if (isGenerating) {
     return (
@@ -65,7 +105,69 @@ const LoadFlashCardsPage = () => {
           </div>
         </div>
       </div>
-    )
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container-fluid" style={{ paddingBottom: 96 }}>
+        <div className="row">
+          <div className="col-lg-8 mx-auto">
+            <div className="alert alert-danger" role="alert">
+              <h4 className="alert-heading">Error</h4>
+              <p>{error}</p>
+              <div className="d-flex gap-2">
+                <button className="btn btn-primary" onClick={() => {
+                  // retry: reload by calling effect again - change key by resetting index and toggling isGenerating
+                  setCurrentCardIndex(0);
+                  setIsGenerating(true);
+                  setError('');
+                  // calling load again by temporarily toggling itemId-like behavior is not needed - effect depends on itemId
+                  // so we call the loader directly:
+                  (async () => {
+                    // inline call of loader if necessary (keeps code simple)
+                    try {
+                      setIsGenerating(true);
+                      setError('');
+                      const user = localStorage.getItem('user');
+                      const userId = user ? JSON.parse(user).username : null;
+                      if (!userId) throw new Error('User not authenticated. Please login again.');
+                      if (!itemId) throw new Error('No flashcard id provided in route.');
+
+                      const res = await contentAPI.loadSavedFC?.(userId, itemId) ?? await contentAPI.loadSavedFlashcard?.(userId, itemId) ?? null;
+                      const payload = res?.data ?? res ?? {};
+                      let flashcards =
+                        Array.isArray(payload)
+                          ? payload
+                          : Array.isArray(payload.questions)
+                          ? payload.questions
+                          : Array.isArray(payload.flashcards)
+                          ? payload.flashcards
+                          : Array.isArray(payload.fcs)
+                          ? payload.fcs
+                          : Array.isArray(payload.cards)
+                          ? payload.cards
+                          : [];
+
+                      if (!flashcards || flashcards.length === 0) flashcards = fcs;
+                      setGeneratedFlashcards(flashcards);
+                    } catch (err) {
+                      console.error('Retry failed:', err);
+                      setError(err?.message || 'Failed to load flashcards.');
+                      setGeneratedFlashcards(fcs);
+                    } finally {
+                      setIsGenerating(false);
+                    }
+                  })();
+                }}>
+                  Try Again
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -99,13 +201,15 @@ const LoadFlashCardsPage = () => {
                   >
                     ←
                   </button>
-                  <span className="fw-semibold me-3">
-                    {currentCardIndex + 1}/{generatedFlashcards.length}
-                  </span>
+                  {generatedFlashcards.length > 0 && (
+                    <span className="fw-semibold me-3">
+                      {currentCardIndex + 1}/{generatedFlashcards.length}
+                    </span>
+                  )}
                   <button
                     className="btn btn-outline-primary"
                     onClick={handleNextCard}
-                    disabled={currentCardIndex === generatedFlashcards.length - 1}
+                    disabled={currentCardIndex === generatedFlashcards.length - 1 || generatedFlashcards.length === 0}
                   >
                     →
                   </button>
@@ -118,7 +222,7 @@ const LoadFlashCardsPage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default LoadFlashCardsPage
+export default LoadFlashCardsPage;

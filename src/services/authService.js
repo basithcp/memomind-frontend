@@ -1,22 +1,57 @@
 // src/services/authService.js
-import axios from 'axios';
+import { authAPI } from './apiService';
 
-const API_BASE = 'http://localhost:5000/api';
-
+// Re-export auth functions with proper error handling
 export async function signup({ username, fullName, password, confirmPassword }) {
-  const resp = await axios.post(`${API_BASE}/auth/signup`, {
-    username,
-    fullName,
-    password,
-    confirmPassword,
-  });
-  return resp.data;
+  try {
+    const result = await authAPI.signup({
+      username,
+      fullName,
+      password,
+      confirmPassword,
+    });
+    return result.data;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function login({ username, password }) {
-  const resp = await axios.post(`${API_BASE}/auth/login`, {
-    username,
-    password,
-  });
-  return resp.data;
+  try {
+    const result = await authAPI.login({
+      username,
+      password,
+    });
+    return result.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+// Additional auth functions
+export async function logout() {
+  try {
+    const result = await authAPI.logout();
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getProfile() {
+  try {
+    const result = await authAPI.getProfile();
+    return result.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function updateProfile(profileData) {
+  try {
+    const result = await authAPI.updateProfile(profileData);
+    return result.data;
+  } catch (error) {
+    throw error;
+  }
 }

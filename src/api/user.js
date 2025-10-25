@@ -1,46 +1,37 @@
-// TODO: Replace with real API call once backend is ready
+// User Management API - Now integrated with backend
+import { authAPI } from '../services/apiService';
 
-// User Management API
 export const userAPI = {
   // Get user profile
   getUserProfile: async () => {
-    // TODO: Implement API call to get user profile
-    console.log('Getting user profile')
-    return Promise.resolve({
-      id: 'user_001',
-      name: 'Bob',
-      email: 'bob@example.com',
-      avatar: null,
-      preferences: {
-        theme: 'light',
-        notifications: true
-      }
-    })
+    try {
+      const result = await authAPI.getProfile();
+      return result.data;
+    } catch (error) {
+      console.error('Error getting user profile:', error);
+      throw error;
+    }
   },
 
   // Update user profile
   updateUserProfile: async (profileData) => {
-    // TODO: Implement API call to update user profile
-    console.log('Updating user profile:', profileData)
-    return Promise.resolve({ success: true })
-  },
-
-  // Get user's study statistics
-  getUserStats: async () => {
-    // TODO: Implement API call to get user statistics
-    console.log('Getting user statistics')
-    return Promise.resolve({
-      totalSessions: 25,
-      totalStudyTime: '12 hours',
-      averageScore: 85,
-      favoriteSubject: 'Biology'
-    })
+    try {
+      const result = await authAPI.updateProfile(profileData);
+      return result.data;
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      throw error;
+    }
   },
 
   // Logout user
   logout: async () => {
-    // TODO: Implement API call to logout
-    console.log('Logging out user')
-    return Promise.resolve({ success: true })
+    try {
+      const result = await authAPI.logout();
+      return result;
+    } catch (error) {
+      console.error('Error logging out:', error);
+      throw error;
+    }
   }
 }

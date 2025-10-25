@@ -23,6 +23,12 @@ body {
   background: linear-gradient(135deg, var(--primary-purple), var(--dark-purple));
   min-height: 100vh;
   color: white;
+  width: 280px !important;
+  flex-shrink: 0;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
 }
 
 .sidebar .nav-link {
@@ -35,6 +41,14 @@ body {
   color: white;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
+}
+
+.main-content-wrapper {
+  margin-left: 280px;
+  width: calc(100% - 280px);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
@@ -192,6 +206,21 @@ body {
 
 .layout-container {
   max-height: 100vh;
+  position: relative;
+}
+
+/* Responsive design for smaller screens */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100% !important;
+    position: relative;
+    z-index: 1000;
+  }
+  
+  .main-content-wrapper {
+    margin-left: 0;
+    width: 100%;
+  }
 }
 .children-container {
   min-height: 90vh !important;

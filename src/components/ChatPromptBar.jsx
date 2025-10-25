@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import MenuDropdown from './NewMenuDropdown.jsx'
+import MenuDropdown from './MenuDropDown.jsx'
 
 /**
  * ChatPromptBar
@@ -10,7 +10,7 @@ import MenuDropdown from './NewMenuDropdown.jsx'
  * This component is styled to sit fixed near the bottom by default. If you already
  * have a global fixed area, you can put <ChatPromptBar /> there or change styles.
  */
-const NewChatPromptBar = ({ onSend = () => {} }) => {
+const ChatPromptBar = ({ onSend = () => {} }) => {
   const [text, setText] = useState('')
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -119,4 +119,4 @@ const NewChatPromptBar = ({ onSend = () => {} }) => {
   )
 }
 
-export default NewChatPromptBar
+export default ChatPromptBar

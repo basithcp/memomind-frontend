@@ -3,17 +3,16 @@
 import { Navigate, Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 
 import Layout from './layouts/Layout';
+import FlashCardsPage from './pages/FlashCardsPage';
+import GenerateFlashcardsPage from './pages/GenerateFlashcardsPage';
+import GenerateMCQPage from './pages/GenerateMCQPage';
+import GenerateNotesPage from './pages/GenerateNotesPage';
 import HomePage from './pages/HomePage';
 import LoadFlashCardsPage from './pages/LoadFlashCardsPage';
 import LoadMCQPage from './pages/LoadMCQPage';
 import LoadNotesPage from './pages/LoadNotesPage';
-import FlashCardsPage from './pages/NewFlashCardsPage';
-import GenerateFlashcardsPage from './pages/NewGenerateFlashcardsPage';
-import GenerateMCQPage from './pages/NewGenerateMCQPage';
-import GenerateNotesPage from './pages/NewGenerateNotesPage';
-import MCQSessionPage from './pages/NewMCQsPage';
-import NotesPage from './pages/NewNotesPage';
-import RevisionPage from './pages/RevisionPage';
+import MCQsPage from './pages/MCQsPage';
+import NotesPage from './pages/NotesPage';
 import UploadPage from './pages/UploadPage';
 
 // auth pages
@@ -88,18 +87,16 @@ function App() {
             </RequireAuth>
           }
         />
-
         <Route
-          path="/mcq-session"
+          path="/mcqs"
           element={
             <RequireAuth>
               <Layout>
-                <MCQSessionPage />
+                <MCQsPage />
               </Layout>
             </RequireAuth>
           }
         />
-
         <Route
           path="/notes"
           element={
@@ -123,18 +120,7 @@ function App() {
         />
 
         <Route
-          path="/revision"
-          element={
-            <RequireAuth>
-              <Layout>
-                <RevisionPage />
-              </Layout>
-            </RequireAuth>
-          }
-        />
-
-        <Route
-          path="/generate-notes"
+          path="/generate-notes/:itemName/:itemId"
           element={
             <RequireAuth>
               <Layout>
@@ -145,7 +131,7 @@ function App() {
         />
 
         <Route
-          path="/generate-mcq"
+          path="/generate-mcq/:itemName/:itemId"
           element={
             <RequireAuth>
               <Layout>
@@ -156,7 +142,7 @@ function App() {
         />
 
         <Route
-          path="/generate-flashcards"
+          path="/generate-flashcards/:itemName/:itemId"
           element={
             <RequireAuth>
               <Layout>
@@ -167,7 +153,7 @@ function App() {
         />
 
         <Route
-          path="/load-notes/*"
+          path="/load-notes/:itemId"
           element={
             <RequireAuth>
               <Layout>
@@ -178,7 +164,7 @@ function App() {
         />
 
         <Route
-          path="/load-mcq/*"
+          path="/load-mcq/:itemId"
           element={
             <RequireAuth>
               <Layout>
@@ -189,7 +175,7 @@ function App() {
         />
 
         <Route
-          path="/load-flashcards/*"
+          path="/load-flashcards/:itemId"
           element={
             <RequireAuth>
               <Layout>

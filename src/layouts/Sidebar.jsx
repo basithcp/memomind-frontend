@@ -1,4 +1,3 @@
-import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 
 const Sidebar = () => {
@@ -9,7 +8,7 @@ const Sidebar = () => {
   }
 
   return (
-    <div className="sidebar p-4" style={{ width: '280px', minHeight: '100vh' }}>
+    <div className="sidebar p-4">
       {/* Logo Section */}
       <div className="d-flex flex-column align-items-center mb-4">
         <div className="logo-icon mb-3">
@@ -56,7 +55,7 @@ const Sidebar = () => {
             <ul className="nav flex-column ms-3">
               <li className="nav-item mb-2">
                 <Link 
-                  to="/mcq-session" 
+                  to="/mcqs" 
                   className={`nav-link d-flex align-items-center py-2 px-3 rounded ${
                     isActive('/mcq-session') ? 'active' : ''
                   }`}

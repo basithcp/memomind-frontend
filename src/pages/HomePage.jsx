@@ -33,7 +33,7 @@ const HomePage = () => {
 
           {/* SECOND ROW: three cards */}
           <div className={styles.cardsGrid}>
-            <Link to="/mcq-session" className={styles.cardLink}>
+            <Link to="/mcqs" className={styles.cardLink}>
               <div className={`card ${styles.cardCustom}`}>
                 <div className="card-body d-flex flex-column justify-content-center">
                   <div className="mb-3">

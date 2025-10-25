@@ -1,133 +1,138 @@
-import React, { useState, useEffect } from 'react'
-import notesData from '../data/notesData.json'
+// NotesPage.jsx
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { contentAPI } from '../api/content';
+import styles from "./NotesPage.module.css";
 
 const NotesPage = () => {
-  const [notes, setNotes] = useState([])
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [selectedNote, setSelectedNote] = useState(null)
-  const [showModal, setShowModal] = useState(false)
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
-    setNotes(notesData.notes)
-  }, [])
+    loadNotes();
+  }, []);
 
-  const handleViewDetails = (note) => {
-    setSelectedNote(note)
-    setShowModal(true)
-  }
+  const loadNotes = async () => {
+    try {
+      setLoading(true);
+      const userId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).username : null;
+      if (!userId) {
+        setError('User not authenticated. Please login again.');
+        return;
+      }
+      const result = await contentAPI.getSavedNotes(userId);
+      setNotes(result.data || []);
+    } catch (error) {
+      console.error('Error loading notes:', error);
+      setError(error.message || 'Failed to load notes. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  const closeModal = () => {
-    setShowModal(false)
-    setSelectedNote(null)
-  }
+  const handleDelete = async (itemId) => {
+    if (!window.confirm("Delete this Notes set?")) return;
+    
+    try {
+      const userId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).username : null;
+      if (!userId) {
+        setError('User not authenticated. Please login again.');
+        return;
+      }
+      await contentAPI.deleteSavedNote(userId, itemId);
+      setNotes((prev) => prev.filter((n) => n.itemId !== itemId));
+    } catch (error) {
+      console.error('Error deleting Notes set:', error);
+      alert('Failed to delete Notes set. Please try again.');
+    }
+  };
 
-  // Render saved notes immediately without generation UI
+  const handleOpen = (note) => {
+    navigate(`/load-notes/${note.itemId}`, { state: { note } });
+  };
 
-  if (notes.length === 0) {
+  if (loading) {
     return (
-      <div className="container-fluid">
-        <div className="row justify-content-center">
-          <div className="col-lg-8">
-            <div className="text-center">
-              <div className="card card-custom p-4">
-                <div className="card-body">
-                  <h5 className="mb-3">No notes available</h5>
-                  <p className="text-muted">Upload a document to create notes.</p>
-                </div>
-              </div>
-            </div>
+      <div className={styles.newNotesContainer}>
+        <h1 className={styles.newNotesTitle}>Your Notes</h1>
+        <div className="text-center p-4">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
           </div>
+          <p className="mt-2">Loading your notes...</p>
         </div>
       </div>
-    )
+    );
+  }
+
+  if (error) {
+    return (
+      <div className={styles.newNotesContainer}>
+        <h1 className={styles.newNotesTitle}>Your Notes</h1>
+        <div className="alert alert-danger" role="alert">
+          <h4 className="alert-heading">Error</h4>
+          <p>{error}</p>
+          <button className="btn btn-primary" onClick={loadNotes}>
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="container-fluid">
-      <div className="row">
-        <div className="col-12">
-          <h2 className="mb-4 text-dark">Your Notes</h2>
-          
-          {/* Notes List */}
-          <div className="row g-4">
-            {notes.map((note) => (
-              <div key={note.id} className="col-md-6 col-lg-4">
-                <div className="card card-custom h-100">
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-start mb-3">
-                      <h5 className="card-title text-dark">{note.title}</h5>
-                      <small className="text-muted">{note.date}</small>
-                    </div>
-                    <p className="card-text text-muted mb-3">
-                      {note.content.substring(0, 150)}...
-                    </p>
-                    <div className="d-flex justify-content-between align-items-center">
-                      <span className="badge bg-primary">{note.subject}</span>
-                      <button 
-                        className="btn btn-outline-primary btn-sm"
-                        onClick={() => handleViewDetails(note)}
-                      >
-                        View Details
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+    <div className={styles.newNotesContainer}>
+      <h1 className={styles.newNotesTitle}>Your Notes</h1>
 
-          {/* Follow-up removed: revision is reference-only */}
-        </div>
-      </div>
-
-      {/* Modal for viewing note details */}
-      {showModal && selectedNote && (
-        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-lg">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">{selectedNote.title}</h5>
-                <button 
-                  type="button" 
-                  className="btn-close" 
-                  onClick={closeModal}
-                ></button>
-              </div>
-              <div className="modal-body">
-                <div className="mb-3">
-                  <span className="badge bg-primary me-2">{selectedNote.subject}</span>
-                  <small className="text-muted">{selectedNote.date}</small>
-                </div>
-                <div className="mb-3">
-                  <strong>Tags:</strong>
-                  {selectedNote.tags.map((tag, index) => (
-                    <span key={index} className="badge bg-secondary me-1 ms-1">{tag}</span>
-                  ))}
-                </div>
-                <div>
-                  <strong>Content:</strong>
-                  <div className="mt-2 p-3 bg-light rounded">
-                    <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
-                      {selectedNote.content}
-                    </pre>
-                  </div>
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button 
-                  type="button" 
-                  className="btn btn-secondary" 
-                  onClick={closeModal}
+      <div className={styles.newNotesList} role="list">
+        {notes.length === 0 ? (
+          <div className={styles.newNotesEmpty}>No saved notes found.</div>
+        ) : (
+          notes.map((note) => (
+            <article key={note._id} className={styles.newNotesCard} role="listitem">
+              <div className={styles.newNotesCardHeader}>
+                <h2 className={styles.newNotesItemName}>{note.title || note.itemName}</h2>
+                <button
+                  className={styles.newNotesDeleteBtn}
+                  onClick={() => handleDelete(note.itemId)}
+                  aria-label={`Delete ${note.title || note.itemName}`}
+                  title="Delete"
                 >
-                  Close
+                  ✕
                 </button>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
 
-export default NotesPage
+              <div className={styles.newNotesCardBody}>
+                <div className={styles.newNotesMetaRow}>
+                  <span className={styles.newNotesMetaLabel}>Added:</span>
+                  <time className={styles.newNotesMetaValue} dateTime={note.createdAt}>
+                    {new Date(note.createdAt).toLocaleString()}
+                  </time>
+                </div>
+                {note.subject && (
+                  <div className={styles.newNotesMetaRow}>
+                    <span className={styles.newNotesMetaLabel}>Subject:</span>
+                    <span className={styles.newNotesMetaValue}>{note.subject}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className={styles.newNotesCardFooter}>
+                <button
+                  className={styles.newNotesPrimaryBtn}
+                  onClick={() => handleOpen(note)}
+                >
+                  Open
+                </button>
+              </div>
+            </article>
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default NotesPage;
